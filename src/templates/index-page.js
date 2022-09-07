@@ -126,8 +126,9 @@ export const pageQuery = graphql`
         }
         heading
         subheading
-        mainpitch {
+        main {
           title
+          subtitle
           description
         }
         description
