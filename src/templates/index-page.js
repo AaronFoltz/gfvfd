@@ -7,59 +7,51 @@ import Layout from "../components/Layout";
 import Features from "../components/Features";
 import BlogRoll from "../components/BlogRoll";
 import FullWidthImage from "../components/FullWidthImage";
+import Content, { HTMLContent } from '../components/Content';
 
 // eslint-disable-next-line
 export const IndexPageTemplate = ({
   image,
-  title,
-  heading,
-  subheading,
-  mainpitch,
-  description,
-  intro,
+  content,
 }) => {
-  const heroImage = getImage(image) || image;
+
+  console.log(image)
+  const heroImage = getImage('img/station.jpg')
+
+  const {frontmatter, html} = content
 
   return (
     <div>
-      <FullWidthImage img={heroImage} title={title} subheading={subheading} />
-      <section className="section section--gradient">
-        <div className="container">
-          <div className="section">
-            <div className="columns">
-              <div className="column is-10 is-offset-1">
-                <div className="content">
-                  <div className="content">
-                    <div className="tile">
-                      <h1 className="title">{mainpitch.title}</h1>
+      <FullWidthImage img={heroImage} />
+      <section className='section section--gradient'>
+        <div className='container'>
+          <div className='section'>
+            <div className='columns'>
+              <div className='column is-10 is-offset-1'>
+                <div className='content'>
+                  <div className='content'>
+                    <div className='tile'>
+                      <h1 className='has-text-weight-semibold is-size-2'>
+                        {frontmatter.title}
+                      </h1>
                     </div>
-                    <div className="tile">
-                      <h3 className="subtitle">{mainpitch.description}</h3>
+                    <div className='tile'>
+                      <h3 className='subtitle'>{frontmatter.subtitle}</h3>
                     </div>
-                  </div>
-                  <div className="columns">
-                    <div className="column is-12">
-                      <h3 className="has-text-weight-semibold is-size-2">
-                        {heading}
-                      </h3>
-                      <p>{description}</p>
-                    </div>
-                  </div>
-                  <Features gridItems={intro.blurbs} />
-                  <div className="columns">
-                    <div className="column is-12 has-text-centered">
-                      <Link className="btn" to="/products">
-                        See all products
-                      </Link>
+                    <div className='tile'>
+                      <HTMLContent
+                        className='content'
+                        content={html}
+                      />
                     </div>
                   </div>
-                  <div className="column is-12">
-                    <h3 className="has-text-weight-semibold is-size-2">
+                  <div className='column is-12'>
+                    <h3 className='has-text-weight-semibold is-size-2'>
                       Latest stories
                     </h3>
                     <BlogRoll />
-                    <div className="column is-12 has-text-centered">
-                      <Link className="btn" to="/blog">
+                    <div className='column is-12 has-text-centered'>
+                      <Link className='btn' to='/blog'>
                         Read more
                       </Link>
                     </div>
@@ -79,7 +71,7 @@ IndexPageTemplate.propTypes = {
   title: PropTypes.string,
   heading: PropTypes.string,
   subheading: PropTypes.string,
-  mainpitch: PropTypes.object,
+  main: PropTypes.object,
   description: PropTypes.string,
   intro: PropTypes.shape({
     blurbs: PropTypes.array,
@@ -87,18 +79,13 @@ IndexPageTemplate.propTypes = {
 };
 
 const IndexPage = ({ data }) => {
-  const { frontmatter } = data.markdownRemark;
 
+  console.log(data)
   return (
     <Layout>
       <IndexPageTemplate
-        image={frontmatter.image}
-        title={frontmatter.title}
-        heading={frontmatter.heading}
-        subheading={frontmatter.subheading}
-        mainpitch={frontmatter.mainpitch}
-        description={frontmatter.description}
-        intro={frontmatter.intro}
+        image={data.markdownRemark.image}
+        content={data.markdownRemark}
       />
     </Layout>
   );
@@ -124,27 +111,9 @@ export const pageQuery = graphql`
             gatsbyImageData(quality: 100, layout: FULL_WIDTH)
           }
         }
-        heading
-        subheading
-        main {
-          title
-          subtitle
-          description
-        }
-        description
-        intro {
-          blurbs {
-            image {
-              childImageSharp {
-                gatsbyImageData(width: 240, quality: 64, layout: CONSTRAINED)
-              }
-            }
-            text
-          }
-          heading
-          description
-        }
+        subtitle
       }
+      html
     }
   }
 `;
